@@ -1,34 +1,28 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { HashRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import InscriptionForm from './insciptionForm';
+import Login from './login';
+import MenuCreate from './menuCreate';
+import MenuDisplay from './menuDisplay';
+import Forecast from './forecast';
+import InscriptionManagement from './inscriptionManagement';
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isAuthenticated, setAuthenticated] = useState(true);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MenuDisplay setAuthenticated={setAuthenticated}/>} />
+        <Route path="/inscription" element={<InscriptionForm setAuthenticated={setAuthenticated}/>} />
+        <Route path="/login" element={isAuthenticated ? <Navigate  to="/forecast" replace={true} /> : <Login setAuthenticated={setAuthenticated} />} />
+        <Route path="/menuCreate" element={isAuthenticated ?  <MenuCreate isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />
+        <Route path="/forecast" element={isAuthenticated ?  <Forecast isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />
+        <Route path="/inscriptionManagement" element={isAuthenticated ?  <InscriptionManagement isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />     
+      </Routes>
+    </Router>
+    
   )
 }
 
