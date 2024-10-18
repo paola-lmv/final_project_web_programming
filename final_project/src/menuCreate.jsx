@@ -13,23 +13,6 @@ function MenuCreate({isAuthenticated}) {
     const [loading, setLoading] = useState(true);
     const [show, setShow] = useState(false);
 
-    const getData = async () => {
-    try {
-      const res = await fetch(`https://api.jsonbin.io/v3/b/67114e74acd3cb34a898b1ed/latest`, {
-        method: 'GET',
-        headers: {'X-Access-Key': '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  }
-      });
-  
-      const json = await res.json();
-      setRecipe(json.record.recipes)
-      setLoading(false);
-    } catch(e) {
-      console.error(e);
-      setRecipe([])
-      setLoading(false);
-    }
-  }
-    useEffect(()=> {getData()}, []);
 
     const saveRecipes = async (recipes) => {
     try{
