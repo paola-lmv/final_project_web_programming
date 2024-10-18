@@ -54,7 +54,7 @@ function MenuCreate({isAuthenticated}) {
     saveRecipes([newRecipe,...recipes])
   };
 
- 
+
 
     return (<>
     

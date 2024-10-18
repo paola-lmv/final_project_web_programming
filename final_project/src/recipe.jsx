@@ -11,7 +11,7 @@ function Recipe({ title, ingredients, description, imageUrl, deleteRecipe }) {
         <CardImg src={imageUrl} alt={title} />
         <p>{ingredients}</p>
         <p>{description}</p>
-        <Button onClick={deleteRecipe}>{t("Delete")}</Button> {/* Add delete button */}
+        <Button onClick={deleteRecipe}>Delete</Button> {/* Add delete button */}
       </CardBody>
       
     </Card>
