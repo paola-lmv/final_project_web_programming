@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardBody, CardHeader, CardImg, Button } from "react-bootstrap";
 import ListGroup from 'react-bootstrap/ListGroup';
 
-function Recipe({ title, description, imageUrl, deleteRecipe }) {
+function Recipe({ title, description, imageUrl, deleteRecipe, index }) {
   // State with initial recipe
 const [ingredients, setIngredient] = useState([]);
 const [loading, setLoading] = useState(true);
@@ -17,7 +17,8 @@ try {
   });
 
   const json = await res.json();
-  setIngredient(json.record.recipes[0].ingredients)
+  setIngredient(json.record.recipes[index].ingredients)
+  console.log(json.record.recipes[index].ingredients)
   setLoading(false);
 } catch(e) {
   console.error(e);
@@ -25,6 +26,7 @@ try {
   setLoading(false);
 }
 }
+
 useEffect(()=> {getData()}, []);
 
 const saveIngredient = async (ingredients) => {

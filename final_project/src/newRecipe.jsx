@@ -13,6 +13,7 @@ const [description, setDescription] = useState("");
 const [imageUrl, setImageUrl] = useState("");
 const [loading, setLoading] = useState(true);
 const [show, setShow] = useState(false);
+const [newIngredients, setNewIngredients] = useState([]);
 
 const getData = async () => {
 try {
@@ -22,7 +23,7 @@ try {
   });
 
   const json = await res.json();
-  setIngredient(json.record.recipes[lengthRecipe-1].ingredients)
+  setIngredient(json.record.recipes[lengthRecipe].ingredients)
   setLoading(false);
 } catch(e) {
   console.error(e);
@@ -59,31 +60,39 @@ const deleteIngredient = (indexToDelete) => {
   const updatedIngredient = ingredients.filter((ingredient, index) => index !== indexToDelete);
   saveIngredient(updatedIngredient)
 };
-
+const deleteNewIngredient = (indexToDelete) => {
+  const updatedNewIngredient = newIngredients.filter((_, index) => index !== indexToDelete);
+  setNewIngredients(updatedNewIngredient)
+};
+// Fonction pour ajouter de nouveaux ingrédients à l'état
+const handleAddNewIngredients = (ingredients) => {
+  setNewIngredients((prev) => [...prev, ...ingredients]);
+};
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents page refresh on form submit
-
+    
     // Create a new post object
     const newRecipe = {
       title,
-      ingredients,
+      NewIngredients,
       description,
       imageUrl
     };
-
+    
     // Add the new post to the App state
     addRecipe(newRecipe);
+    
 
     // Clear the input fields after submission
     setTitle("");
     setIngredient([]);
     setDescription("");
     setImageUrl("");
+    setNewIngredients([])
   };
 
   return (
     <Card className="new-recipe mt-3">
-      {console.log(ingredients)}
       <CardHeader>Create a New Recipe</CardHeader>
       <CardBody>
       <Form onSubmit={handleSubmit} className="mb-2">
@@ -97,7 +106,7 @@ const deleteIngredient = (indexToDelete) => {
           />
         </div>
         <div>
-        <NewIngredient addIngredient={addNewIngredient} />
+        <NewIngredient  handleAddNewIngredients={handleAddNewIngredients} newIngredients={newIngredients} deleteNewIngredient={deleteNewIngredient}/>
         </div>
         <div>
           <FormLabel htmlFor="description">description:</FormLabel>

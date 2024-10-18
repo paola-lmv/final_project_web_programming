@@ -55,6 +55,7 @@ function MenuDisplay({isAuthenticated}) {
     const updatedRecipes = recipes.filter((recipe, index) => index !== indexToDelete);
     saveRecipes(updatedRecipes)
   };
+  const lengthRecipe=recipes.length;
     return (<>
     {isAuthenticated ? (<NavbarLoged/>):(<NavbarUnLoged/>)}
     <p>MenuDisplay</p>
@@ -68,6 +69,7 @@ function MenuDisplay({isAuthenticated}) {
                 description={recipe.description}
                 imageUrl={recipe.imageUrl}
                 deleteRecipe={() => deleteRecipe(index)} 
+                index={index}
               /></Col>
             )))}
             <Alert variant="danger" onClose={() => setShow(false)} dismissible show={show}>
