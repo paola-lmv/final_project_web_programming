@@ -18,7 +18,7 @@ function MenuDisplay({isAuthenticated}) {
           });
       
           const json = await res.json();
-          setRecipe(json.record)
+          setRecipe(json.record.recipes)
           setLoading(false);
         } catch(e) {
           console.error(e);
@@ -26,7 +26,7 @@ function MenuDisplay({isAuthenticated}) {
           setLoading(false);
         }
       }
-        useEffect(()=> {getData()}, []);
+      useEffect(()=> {getData()}, []);
 
     const saveRecipes = async (recipes) => {
         try{
@@ -65,7 +65,6 @@ function MenuDisplay({isAuthenticated}) {
               <Recipe
                 key={"p" + index + "_" + recipe.title}
                 title={recipe.title}
-                ingredients={recipe.ingredients}
                 description={recipe.description}
                 imageUrl={recipe.imageUrl}
                 deleteRecipe={() => deleteRecipe(index)} 

@@ -53,9 +53,7 @@ function MenuCreate({isAuthenticated}) {
   const addNewRecipe = (newRecipe) => {
     saveRecipes([newRecipe,...recipes])
   };
-
-
-
+  const lengthRecipe=recipes.length;
     return (<>
     
     {isAuthenticated ? (<NavbarLoged/>):(<NavbarUnLoged/>)}
@@ -65,7 +63,7 @@ function MenuCreate({isAuthenticated}) {
         <Spinner animation="grow" size="xl" />:<>
           <Row className="mb-3">
             <Col>
-              <NewRecipe addRecipe={addNewRecipe} />
+              <NewRecipe addRecipe={addNewRecipe} lengthRecipe={lengthRecipe} />
             </Col>
           </Row>
           </>}
