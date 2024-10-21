@@ -10,7 +10,7 @@ function NavbarUnLoged() {
                 <Container>
                   <Navbar.Brand href="/">Navbar</Navbar.Brand>
                   <Nav className="me-auto">
-                    <Nav.Link href="/">Menu Display</Nav.Link>
+                    <Nav.Link href="/#/menu">Menu Display</Nav.Link>
                     <Nav.Link href="/#/inscription">Inscription</Nav.Link>
                     <Nav.Link href="/#/login">Login</Nav.Link>
                   </Nav>

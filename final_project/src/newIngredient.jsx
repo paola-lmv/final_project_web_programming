@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Ingredient from './ingrédient';
 import ListGroup from 'react-bootstrap/ListGroup';
+import { FormControl, FormLabel, Card, Button, CardBody, CardHeader} from "react-bootstrap";
 
-import { FormControl, FormLabel, Card, Button, Form, CardBody, CardHeader} from "react-bootstrap";
 
-
-function NewIngredient({ handleAddNewIngredients, newIngredients,deleteNewIngredient }) {
+function NewIngredient({ handleIngredients, ingredients, deleteIngredient }) {
   const [quantity, setQuantity] = useState("");
   const [measure, setMeasure] = useState("");
   const [type, setType] = useState("");
@@ -21,7 +20,7 @@ function NewIngredient({ handleAddNewIngredients, newIngredients,deleteNewIngred
 
 
    // Appeler la fonction de rappel pour transmettre les nouveaux ingrédients à NewRecipe
-   handleAddNewIngredients([newIngredient]);
+   handleIngredients([newIngredient]);
 
     // Clear the input fields after submission
     setQuantity("");
@@ -36,8 +35,8 @@ function NewIngredient({ handleAddNewIngredients, newIngredients,deleteNewIngred
       <CardHeader>Add a New Ingredient</CardHeader>
       <CardBody>
       <ListGroup>
-          {(newIngredients.map((newIngredient,index)=>(
-            <ListGroup.Item><Ingredient quantity={newIngredient.quantity} measure={newIngredient.measure} type={newIngredient.type} deleteIngredient={deleteNewIngredient}/></ListGroup.Item>
+          {(ingredients.map((ingredient,index)=>(
+            <ListGroup.Item><Ingredient quantity={ingredient.quantity} measure={ingredient.measure} type={ingredient.type} deleteIngredient={deleteIngredient}/></ListGroup.Item>
           )))}
         </ListGroup>
         <div>

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { FormControl, FormLabel, Card, Button, Form, CardBody, CardHeader} from "react-bootstrap";
 import ListGroup from 'react-bootstrap/ListGroup';
 
-
 function NewRecipe({ addRecipe, lengthRecipe }) {
 // State with initial recipe
 const [title, setTitle] = useState("");
@@ -13,7 +12,6 @@ const [description, setDescription] = useState("");
 const [imageUrl, setImageUrl] = useState("");
 const [loading, setLoading] = useState(true);
 const [show, setShow] = useState(false);
-const [newIngredients, setNewIngredients] = useState([]);
 
 const getData = async () => {
 try {
@@ -51,22 +49,14 @@ try{
   setShow(true);
 }
 }
-// Function to add a new post to the state
-const addNewIngredient = (newIngredient) => {
-saveIngredient([newIngredient,...ingredients])
-};
-// Function to delete a post by index
+
 const deleteIngredient = (indexToDelete) => {
-  const updatedIngredient = ingredients.filter((ingredient, index) => index !== indexToDelete);
-  saveIngredient(updatedIngredient)
-};
-const deleteNewIngredient = (indexToDelete) => {
-  const updatedNewIngredient = newIngredients.filter((_, index) => index !== indexToDelete);
-  setNewIngredients(updatedNewIngredient)
+  const updatedIngredient = ingredients.filter((_, index) => index !== indexToDelete);
+  setIngredient(updatedIngredient)
 };
 // Fonction pour ajouter de nouveaux ingrédients à l'état
-const handleAddNewIngredients = (ingredients) => {
-  setNewIngredients((prev) => [...prev, ...ingredients]);
+const handleIngredients = (ingredients) => {
+  setIngredient((prev) => [...prev, ...ingredients]);
 };
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents page refresh on form submit
@@ -74,7 +64,7 @@ const handleAddNewIngredients = (ingredients) => {
     // Create a new post object
     const newRecipe = {
       title,
-      NewIngredients,
+      ingredients,
       description,
       imageUrl
     };
@@ -88,7 +78,6 @@ const handleAddNewIngredients = (ingredients) => {
     setIngredient([]);
     setDescription("");
     setImageUrl("");
-    setNewIngredients([])
   };
 
   return (
@@ -106,7 +95,7 @@ const handleAddNewIngredients = (ingredients) => {
           />
         </div>
         <div>
-        <NewIngredient  handleAddNewIngredients={handleAddNewIngredients} newIngredients={newIngredients} deleteNewIngredient={deleteNewIngredient}/>
+        <NewIngredient  handleIngredients={handleIngredients} ingredients={ingredients} deleteIngredient={deleteIngredient}/>
         </div>
         <div>
           <FormLabel htmlFor="description">description:</FormLabel>
@@ -134,5 +123,6 @@ const handleAddNewIngredients = (ingredients) => {
     </Card>
   );
 }
+
 
 export default NewRecipe;

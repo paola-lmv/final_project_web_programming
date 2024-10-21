@@ -3,7 +3,7 @@ import NavbarLoged from './navbar_loged';
 import Recipe from './recipe';
 import NewRecipe from './newRecipe';
 import React, { useState, useEffect } from "react";
-import { Container, Spinner, Row, Col, Alert } from "react-bootstrap";
+import { Container, Spinner, Row, Col } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 

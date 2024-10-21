@@ -9,7 +9,7 @@ function InscriptionForm({isAuthenticated}) {
     <Form>
         <Form.Group className="mb-3" controlId="Surname">
             <Form.Label>Surname</Form.Label>
-            <Form.Control type="text" placeholder="your surname" />
+            <Form.Control type="text" placeholder="your surname"/>
         </Form.Group>
         <Form.Group className="mb-3" controlId="LastName">
             <Form.Label>Last name</Form.Label>

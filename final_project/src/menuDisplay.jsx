@@ -46,10 +46,6 @@ function MenuDisplay({isAuthenticated}) {
           setShow(true);
         }
       }
-      // Function to add a new post to the state
-  const addNewRecipe = (newRecipe) => {
-    saveRecipes([newRecipe,...recipes])
-  };
      // Function to delete a post by index
   const deleteRecipe = (indexToDelete) => {
     const updatedRecipes = recipes.filter((recipe, index) => index !== indexToDelete);
@@ -60,8 +56,7 @@ function MenuDisplay({isAuthenticated}) {
     {isAuthenticated ? (<NavbarLoged/>):(<NavbarUnLoged/>)}
     <p>MenuDisplay</p>
     <Row>
-        {console.log(recipes)}
-            {recipes.length == 0 ? (<div>Noposts</div>) : (recipes.map((recipe, index) => (
+            {lengthRecipe == 0 ? (<div>Noposts</div>) : (recipes.map((recipe, index) => (
               <Col sm={12} md={6} lg={4}>
               <Recipe
                 key={"p" + index + "_" + recipe.title}

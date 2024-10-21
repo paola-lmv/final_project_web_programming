@@ -8,6 +8,7 @@ function Recipe({ title, description, imageUrl, deleteRecipe, index }) {
 const [ingredients, setIngredient] = useState([]);
 const [loading, setLoading] = useState(true);
 const [show, setShow] = useState(false);
+const [json, setJson] = useState(null);
 
 const getData = async () => {
 try {
@@ -16,10 +17,11 @@ try {
     headers: {'X-Access-Key': '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  }
   });
 
-  const json = await res.json();
-  setIngredient(json.record.recipes[index].ingredients)
-  console.log(json.record.recipes[index].ingredients)
-  setLoading(false);
+  const getJson = await res.json();
+
+  setJson(getJson)
+  setIngredient(getJson.record.recipes[index].ingredients)
+  setLoading(false)
 } catch(e) {
   console.error(e);
   setIngredient([])
@@ -29,28 +31,25 @@ try {
 
 useEffect(()=> {getData()}, []);
 
-const saveIngredient = async (ingredients) => {
+const saveIngredient = async (ingredient) => {
 try{
+  json.record.recipes[index].ingredients=ingredient
   const res = await fetch(`https://api.jsonbin.io/v3/b/67114e74acd3cb34a898b1ed`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       'X-Access-Key':  '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  // Use Access Key
     },
-    body: JSON.stringify({ ingredients: ingredients })
+    body: JSON.stringify(json.record)
   });
   if (res.ok) {
-    setIngredient(ingredients)// Add new post to the array of posts
+    setIngredient(ingredient)// Add new post to the array of posts
   }
 } catch(e) {
   console.error(e);
   setShow(true);
 }
 }
-// Function to add a new post to the state
-const addNewIngredient = (newIngredient) => {
-saveIngredient([newIngredient,...ingredients])
-};
 // Function to delete a post by index
 const deleteIngredient = (indexToDelete) => {
   const updatedIngredient = ingredients.filter((ingredient, index) => index !== indexToDelete);

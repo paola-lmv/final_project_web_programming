@@ -7,9 +7,9 @@ function NavbarLoged() {
         <>
             <Navbar bg="light" data-bs-theme="light">
                 <Container>
-                  <Navbar.Brand href="/">Navbar</Navbar.Brand>
+                  <Navbar.Brand href="/">Log out</Navbar.Brand>
                   <Nav className="me-auto">
-                    <Nav.Link href="/">Menu Display</Nav.Link>
+                    <Nav.Link href="/#/menu">Menu Display</Nav.Link>
                     <Nav.Link href="/#/inscriptionManagement"> See inscriptions</Nav.Link>
                     <Nav.Link href="/#/menuCreate">Create a menu</Nav.Link>
                     <Nav.Link href="/#/forecast">The Forecast</Nav.Link>
