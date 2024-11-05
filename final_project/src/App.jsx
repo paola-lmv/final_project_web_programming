@@ -6,6 +6,11 @@ import MenuCreate from './menuCreate';
 import MenuDisplay from './menuDisplay';
 import Forecast from './forecast';
 import InscriptionManagement from './inscriptionManagement';
+import RecipeManagement from './recipeManagement';
+import RecipeOrderTable from './recipeOrderTable';
+import DataBase from './dataBase';
+
+
 
 
 function App() {
@@ -21,7 +26,10 @@ function App() {
         <Route path="/login" element={isAuthenticated ? <Navigate  to="/forecast" replace={true} /> : <Login isAuthenticated={isAuthenticated} setAuthenticated={setAuthenticated}/>} />
         <Route path="/menuCreate" element={isAuthenticated ?  <MenuCreate isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />
         <Route path="/forecast" element={isAuthenticated ?  <Forecast isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />
+        <Route path="/recipeManagement" element={isAuthenticated ?  <RecipeManagement isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />
         <Route path="/inscriptionManagement" element={isAuthenticated ?  <InscriptionManagement isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />     
+        <Route path="/recipeOrderTable" element={isAuthenticated ?  <RecipeOrderTable isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />
+        <Route path="/database" element={isAuthenticated ?  <DataBase isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />
       </Routes>
     </Router>
     

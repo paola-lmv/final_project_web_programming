@@ -61,6 +61,7 @@ function MenuDisplay({isAuthenticated}) {
               <Recipe
                 key={"p" + index + "_" + recipe.title}
                 title={recipe.title}
+                quantity={recipe.quantity}
                 description={recipe.description}
                 imageUrl={recipe.imageUrl}
                 deleteRecipe={() => deleteRecipe(index)} 

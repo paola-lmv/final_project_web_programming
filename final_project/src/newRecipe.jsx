@@ -8,6 +8,7 @@ function NewRecipe({ addRecipe, lengthRecipe }) {
 // State with initial recipe
 const [title, setTitle] = useState("");
 const [ingredients, setIngredient] = useState([]);
+const [quantity, setquantity] = useState([]);
 const [description, setDescription] = useState("");
 const [imageUrl, setImageUrl] = useState("");
 const [loading, setLoading] = useState(true);
@@ -65,6 +66,7 @@ const handleIngredients = (ingredients) => {
     const newRecipe = {
       title,
       ingredients,
+      quantity,
       description,
       imageUrl
     };
@@ -77,6 +79,7 @@ const handleIngredients = (ingredients) => {
     setTitle("");
     setIngredient([]);
     setDescription("");
+    setQuantity("");
     setImageUrl("");
   };
 
@@ -96,6 +99,15 @@ const handleIngredients = (ingredients) => {
         </div>
         <div>
         <NewIngredient  handleIngredients={handleIngredients} ingredients={ingredients} deleteIngredient={deleteIngredient}/>
+        </div>
+        <div>
+          <FormLabel htmlFor="quantity">quantity:</FormLabel>
+          <FormControl
+            id="quantity"
+            value={quantity}
+            onChange={(e) => setquantity(e.target.value)}
+            required
+          />
         </div>
         <div>
           <FormLabel htmlFor="description">description:</FormLabel>

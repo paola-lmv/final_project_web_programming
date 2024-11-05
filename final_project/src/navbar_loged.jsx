@@ -13,6 +13,9 @@ function NavbarLoged() {
                     <Nav.Link href="/#/inscriptionManagement"> See inscriptions</Nav.Link>
                     <Nav.Link href="/#/menuCreate">Create a menu</Nav.Link>
                     <Nav.Link href="/#/forecast">The Forecast</Nav.Link>
+                    <Nav.Link href="/#/recipeManagement">Manage the recipes</Nav.Link>
+                   < Nav.Link href="/#/recipeOrderTable">Manage the order</Nav.Link>
+                   < Nav.Link href="/#/database">Manage the database</Nav.Link>                
                   </Nav>
                 </Container>
             </Navbar>

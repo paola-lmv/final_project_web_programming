@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardBody, CardHeader, CardImg, Button } from "react-bootstrap";
 import ListGroup from 'react-bootstrap/ListGroup';
 
-function Recipe({ title, description, imageUrl, deleteRecipe, index }) {
+function Recipe({ title, quantity, description, imageUrl, deleteRecipe, index }) {
   // State with initial recipe
 const [ingredients, setIngredient] = useState([]);
 const [loading, setLoading] = useState(true);
@@ -65,7 +65,7 @@ const deleteIngredient = (indexToDelete) => {
             <ListGroup.Item><Ingredient quantity={ingredient.quantity} measure={ingredient.measure} type={ingredient.type} deleteIngredient={deleteIngredient}/></ListGroup.Item>
           )))}
         </ListGroup>
-        <p>{description}</p>
+        <p>the recipe is for {quantity} people {description}</p>
         <Button onClick={deleteRecipe}>Delete</Button> {/* Add delete button */}
       </CardBody>
     </Card>
