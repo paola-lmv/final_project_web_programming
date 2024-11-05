@@ -13,6 +13,24 @@ function InscriptionForm({isAuthenticated}) {
     const [loading, setLoading] = useState(true);
     const [show, setShow] = useState(false);
 
+    const getData = async () => {
+        try {
+          const res = await fetch(`https://api.jsonbin.io/v3/b/672923f7ad19ca34f8c42069/latest`, {
+            method: 'GET',
+            headers: {'X-Access-Key': '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  }
+          });
+      
+          const json = await res.json();
+          setInscription(json.record.inscriptions)
+          setLoading(false);
+        } catch(e) {
+          console.error(e);
+          setInscription([])
+          setLoading(false);
+        }
+      }
+      useEffect(()=> {getData()}, []);
+
     const saveInscriptions = async (inscription) => {
         try{
           const res = await fetch(`https://api.jsonbin.io/v3/b/672923f7ad19ca34f8c42069`, {
@@ -38,18 +56,16 @@ function InscriptionForm({isAuthenticated}) {
       ...formData,
       [name]: value
     });
-    console.log('Valeur actuelle du champ:', name, value);
-    console.log('Données du formulaire:', formData);
   };
 
   // Fonction de gestion de la soumission du formulaire
   const handleSubmit = (e) => {
     e.preventDefault(); // Empêche le rechargement de la page
     const updatedInscriptions = [formData, ...inscriptions];
-    setInscription(updatedInscriptions); // Met à jour l'état local avant l'appel API
+    setInscription(updatedInscriptions); 
     saveInscriptions(updatedInscriptions); // Enregistre les nouvelles données sur l'API
 
-    console.log('Données du formulaire:', formData);
+    
     // Réinitialise les champs du formulaire
     setFormData({
         surname: '',
@@ -62,11 +78,11 @@ function InscriptionForm({isAuthenticated}) {
     <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="Surname">
             <Form.Label>Surname</Form.Label>
-            <Form.Control type="text" placeholder="your surname"  value={formData.surname} onChange={handleChange}/>
+            <Form.Control type="text" name="surname" placeholder="your surname"  value={formData.surname} onChange={handleChange}/>
         </Form.Group>
         <Form.Group className="mb-3" controlId="LastName">
             <Form.Label>Last name</Form.Label>
-            <Form.Control type="text" placeholder="your Last name" value={formData.lastName} onChange={handleChange}/>
+            <Form.Control type="text" name="lastName" placeholder="your Last name" value={formData.lastName} onChange={handleChange}/>
         </Form.Group>
         <Form.Group className="mb-3" controlId="adhesion">
             <Form.Label>are you a member of the BDE?"</Form.Label>

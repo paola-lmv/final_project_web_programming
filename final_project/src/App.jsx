@@ -9,7 +9,7 @@ import InscriptionManagement from './inscriptionManagement';
 
 
 function App() {
-  const [isAuthenticated, setAuthenticated] = useState(false);
+  const [isAuthenticated, setAuthenticated] = useState(true);
 
   return (
     <Router>
