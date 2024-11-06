@@ -1,31 +1,23 @@
 import NavbarUnLoged from './navbar_unloged';
 import NavbarLoged from './navbar_loged';
 import React, { useState, useEffect } from 'react';
+import { BinIdInscription } from './acessCode'
+import { getData } from './dataFunction';
 
 function InscriptionManagement({isAuthenticated}) { 
   const [inscriptions , setInscription] = useState([]);  
   const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
 
-  const getData = async () => {
-      try {
-        const res = await fetch(`https://api.jsonbin.io/v3/b/672923f7ad19ca34f8c42069/latest`, {
-          method: 'GET',
-          headers: {'X-Access-Key': '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  }
-        });
-    
-        const json = await res.json();
-        setInscription(json.record.inscriptions)
-        setLoading(false);
-      } catch(e) {
-        console.error(e);
-        setInscription([])
-        setLoading(false);
-      }
-    }
-    useEffect(()=> {
-      getData()}, []);
-
+  useEffect(() => {
+    const fetchInscription = async () => {
+      const allInscription = await getData(BinIdInscription); // Appel à la fonction importée
+      setInscription(allInscription.inscriptions);
+      setLoading(false);
+    };
+    fetchInscription(inscriptions);
+  }, []);
+  
   const saveInscription = async (inscription) => {
       try{
         const res = await fetch(`https://api.jsonbin.io/v3/b/672923f7ad19ca34f8c42069`, {

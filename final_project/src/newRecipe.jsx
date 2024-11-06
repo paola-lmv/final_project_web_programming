@@ -1,55 +1,19 @@
 import NewIngredient from './newIngredient';
-import Ingredient from './ingrédient';
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FormControl, FormLabel, Card, Button, Form, CardBody, CardHeader} from "react-bootstrap";
-import ListGroup from 'react-bootstrap/ListGroup';
+import { BinIdRecipe } from './acessCode'
+import { getData } from './dataFunction';
+
 
 function NewRecipe({ addRecipe, lengthRecipe }) {
 // State with initial recipe
 const [title, setTitle] = useState("");
 const [ingredients, setIngredient] = useState([]);
-const [quantity, setquantity] = useState([]);
+const [quantity, setQuantity] = useState([]);
 const [description, setDescription] = useState("");
 const [imageUrl, setImageUrl] = useState("");
 const [loading, setLoading] = useState(true);
 const [show, setShow] = useState(false);
-
-const getData = async () => {
-try {
-  const res = await fetch(`https://api.jsonbin.io/v3/b/67114e74acd3cb34a898b1ed/latest`, {
-    method: 'GET',
-    headers: {'X-Access-Key': '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  }
-  });
-
-  const json = await res.json();
-  setIngredient(json.record.recipes[lengthRecipe].ingredients)
-  setLoading(false);
-} catch(e) {
-  console.error(e);
-  setIngredient([])
-  setLoading(false);
-}
-}
-useEffect(()=> {getData()}, []);
-
-const saveIngredient = async (ingredients) => {
-try{
-  const res = await fetch(`https://api.jsonbin.io/v3/b/67114e74acd3cb34a898b1ed`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Access-Key':  '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  // Use Access Key
-    },
-    body: JSON.stringify({ ingredients: ingredients })
-  });
-  if (res.ok) {
-    setIngredient(ingredients)// Add new post to the array of posts
-  }
-} catch(e) {
-  console.error(e);
-  setShow(true);
-}
-}
 
 const deleteIngredient = (indexToDelete) => {
   const updatedIngredient = ingredients.filter((_, index) => index !== indexToDelete);
@@ -105,7 +69,7 @@ const handleIngredients = (ingredients) => {
           <FormControl
             id="quantity"
             value={quantity}
-            onChange={(e) => setquantity(e.target.value)}
+            onChange={(e) => setQuantity(e.target.value)}
             required
           />
         </div>

@@ -1,40 +1,91 @@
 import React, { useState, useEffect } from 'react';
 import NavbarUnLoged from './navbar_unloged';
 import NavbarLoged from './navbar_loged';
+import { getData } from './dataFunction'; // Importation de la fonction getData
+import { BinIdRecipe } from './acessCode'
 
 function DataBase({ isAuthenticated }) {
-  const [ingredients, setIngredients] = useState([]);
+  const [data, setData] = useState([]);
+  const [ingredients, setIngredient] = useState([]); // Initialize as an array, not an object
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await fetch(`https://api.jsonbin.io/v3/b/your-json-bin-url/latest`, {
-          method: 'GET',
-          headers: { 'X-Access-Key': 'your-access-key' }
-        });
-        const json = await res.json();
-        setIngredients(json.record.ingredients.map(ingredient => ({
-          ...ingredient,
-          supplier: '',
-          webLink: '',
-          price: '',
-          quantity: ''
-        })));
-        setLoading(false);
-      } catch (e) {
-        console.error(e);
-        setIngredients([]);
-        setLoading(false);
-      }
+    const fetchData = async () => {
+      const allData = await getData(BinIdRecipe); // Appel à la fonction importée
+      setData(allData.recipes);
+      setLoading(false);
     };
-    getData();
+    fetchData(data);
   }, []);
 
+  useEffect(() => {
+    if (!loading && data.length > 0) {
+      const newIngredient = [];
+
+      data.forEach(recipe => {
+        if (recipe.ingredients) {
+          recipe.ingredients.forEach(ingredient => {
+            const exists = newIngredient.some(ing => ing.type === ingredient.type && ing.measure === ingredient.measure);
+            if (!exists) {
+              newIngredient.push({
+                type: ingredient.type,
+                quantity: ingredient.quantity,
+                measure: ingredient.measure,
+                fournisseur: "À définir",
+                prix: "À définir",
+                quantité: "À définir"
+              });
+            }
+          });
+        }
+      });
+      setIngredient(newIngredient); // Set the output as an array of ingredients
+    }
+  }, [data, loading]);
+
+  const initialisationData = async () => {
+    console.log("initialisationData")
+    try{
+      const res = await fetch(`https://api.jsonbin.io/v3/b/672b36ddacd3cb34a8a397ff`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Access-Key':  '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  
+        },
+        body: JSON.stringify({ingredients})
+      });
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  useEffect(() => {
+    if (!loading && ingredients.length > 0) {
+      initialisationData();
+      console.log("initialisation")
+    }
+  }, [loading, ingredients]);
+
+  const saveIngredient = async (ingredient) => {
+    try{
+      const res = await fetch(`https://api.jsonbin.io/v3/b/672b36ddacd3cb34a8a397ff`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Access-Key':  '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  
+        },
+        body: JSON.stringify({ingredients: ingredient })
+      });
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
   const handleChange = (index, field, value) => {
-    const updatedIngredients = [...ingredients];
-    updatedIngredients[index][field] = value;
-    setIngredients(updatedIngredients);
+    const updatedIngredient = [...ingredients]; // Clone the output array
+    updatedIngredient[index][field] = value;
+    setIngredient(updatedIngredient); // Update the state with the new array
+    saveIngredient(updatedIngredient);
   };
 
   return (
@@ -53,39 +104,43 @@ function DataBase({ isAuthenticated }) {
             </tr>
           </thead>
           <tbody>
-            {ingredients.map((ingredient, index) => (
-              <tr key={index}>
-                <td>{ingredient.type}</td>
-                <td>
-                  <input
-                    type="text"
-                    value={ingredient.supplier}
-                    onChange={(e) => handleChange(index, 'supplier', e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="url"
-                    value={ingredient.webLink}
-                    onChange={(e) => handleChange(index, 'webLink', e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    value={ingredient.price}
-                    onChange={(e) => handleChange(index, 'price', e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={ingredient.quantity}
-                    onChange={(e) => handleChange(index, 'quantity', e.target.value)}
-                  />
-                </td>
-              </tr>
-            ))}
+            {loading ? (
+              <tr><td colSpan="5">Loading...</td></tr>
+            ) : (
+              ingredients.map((ingredient, index) => (
+                <tr key={index}>
+                  <td>{ingredient.type}</td>
+                  <td>
+                    <input
+                      type="text"
+                      value={ingredient.supplier}
+                      onChange={(e) => handleChange(index, 'supplier', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="url"
+                      value={ingredient.webLink}
+                      onChange={(e) => handleChange(index, 'webLink', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      value={ingredient.price}
+                      onChange={(e) => handleChange(index, 'price', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={ingredient.quantity}
+                      onChange={(e) => handleChange(index, 'quantity', e.target.value)}
+                    />
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

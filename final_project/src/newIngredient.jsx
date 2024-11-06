@@ -17,8 +17,6 @@ function NewIngredient({ handleIngredients, ingredients, deleteIngredient }) {
         measure,
         type
     };
-
-
    // Appeler la fonction de rappel pour transmettre les nouveaux ingrédients à NewRecipe
    handleIngredients([newIngredient]);
 

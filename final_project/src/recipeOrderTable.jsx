@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import NavbarUnLoged from './navbar_unloged';
 import NavbarLoged from './navbar_loged';
+import { BinIdRecipe } from './acessCode'
+import { getData } from './dataFunction';
+
 
 function RecipeOrderTable({ isAuthenticated }) {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await fetch(`https://api.jsonbin.io/v3/b/67114e74acd3cb34a898b1ed/latest`, {
-          method: 'GET',
-          headers: { 'X-Access-Key': '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui' }
-        });
-        const json = await res.json();
-        setRecipes(json.record.recipes.map(recipe => ({ ...recipe, price: '', command: '' })));
-        setLoading(false);
-      } catch (e) {
-        console.error(e);
-        setRecipes([]);
-        setLoading(false);
-      }
+    const fetchRecipe = async () => {
+      const allRecipe = await getData(BinIdRecipe); // Appel à la fonction importée
+      setRecipes(allRecipe.recipes.map(recipe => ({ ...recipe, price: '', command: '' })));
+      setLoading(false);
     };
-    getData();
+    fetchRecipe(recipes);
   }, []);
+
 
   const handleChange = (index, field, value) => {
     const updatedRecipes = [...recipes];

@@ -2,6 +2,8 @@ import Ingredient from './ingrédient';
 import React, { useState, useEffect } from "react";
 import { Card, CardBody, CardHeader, CardImg, Button } from "react-bootstrap";
 import ListGroup from 'react-bootstrap/ListGroup';
+import { BinIdRecipe } from './acessCode'
+import { getData,saveIngredient } from './dataFunction';
 
 function Recipe({ title, quantity, description, imageUrl, deleteRecipe, index }) {
   // State with initial recipe
@@ -10,28 +12,16 @@ const [loading, setLoading] = useState(true);
 const [show, setShow] = useState(false);
 const [json, setJson] = useState(null);
 
-const getData = async () => {
-try {
-  const res = await fetch(`https://api.jsonbin.io/v3/b/67114e74acd3cb34a898b1ed/latest`, {
-    method: 'GET',
-    headers: {'X-Access-Key': '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  }
-  });
+useEffect(() => {
+  const fetchIngredient = async () => {
+    const allIngredient = await getData(BinIdRecipe); // Appel à la fonction importée
+    setIngredient(allIngredient.recipes[index].ingredients);
+    setLoading(false);
+  };
+  fetchIngredient(ingredients);
+}, []);
 
-  const getJson = await res.json();
-
-  setJson(getJson)
-  setIngredient(getJson.record.recipes[index].ingredients)
-  setLoading(false)
-} catch(e) {
-  console.error(e);
-  setIngredient([])
-  setLoading(false);
-}
-}
-
-useEffect(()=> {getData()}, []);
-
-const saveIngredient = async (ingredient) => {
+const saveIngredient1 = async (ingredient) => {
 try{
   json.record.recipes[index].ingredients=ingredient
   const res = await fetch(`https://api.jsonbin.io/v3/b/67114e74acd3cb34a898b1ed`, {
@@ -53,7 +43,7 @@ try{
 // Function to delete a post by index
 const deleteIngredient = (indexToDelete) => {
   const updatedIngredient = ingredients.filter((ingredient, index) => index !== indexToDelete);
-  saveIngredient(updatedIngredient)
+  saveIngredient(updatedIngredient,BinIdRecipe,setIngredient,setShow)
 };
   return (
     <Card >
