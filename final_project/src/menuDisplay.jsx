@@ -36,8 +36,9 @@ function MenuDisplay({isAuthenticated}) {
               <Col sm={12} md={6} lg={4}>
               <Recipe
                 key={"p" + index + "_" + recipe.title}
+                isAuthenticated= {isAuthenticated}
                 title={recipe.title}
-                quantity={recipe.quantity}
+                portions={recipe.portions}
                 description={recipe.description}
                 imageUrl={recipe.imageUrl}
                 deleteRecipe={() => deleteRecipe(index)} 

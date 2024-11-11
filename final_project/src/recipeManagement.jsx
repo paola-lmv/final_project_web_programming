@@ -2,7 +2,7 @@ import NavbarUnLoged from './navbar_unloged';
 import NavbarLoged from './navbar_loged';
 import React, { useState, useEffect } from 'react';
 import { BinIdRecipe } from './acessCode'
-import { getData } from './dataFunction';
+import { getData,saveRecipe } from './dataFunction';
 
 function RecipeManagement({isAuthenticated}) {
     const [recipes , setRecipe] = useState([]);  
@@ -23,23 +23,7 @@ function RecipeManagement({isAuthenticated}) {
       };
       fetchRecipe(recipes);
     }, []);
-  
-    const saveInscription = async (recipe) => {
-        try{
-          const res = await fetch(`https://api.jsonbin.io/v3/b/67114e74acd3cb34a898b1ed`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Access-Key':  '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  // Use Access Key
-            },
-            body: JSON.stringify({ recipes: recipe })
-          });
-        } catch(e) {
-          console.error(e);
-          setShow(true);
-        }
-      }
-    
+      
       const handleAddIngredient = (recipeIndex) => {
         setSelectedRecipeIndex(recipeIndex);
         setShowModal(true);
@@ -48,41 +32,36 @@ function RecipeManagement({isAuthenticated}) {
         if (selectedRecipeIndex !== null) {
           const updatedRecipes = [...recipes];
           updatedRecipes[selectedRecipeIndex].ingredients.push(newIngredient);
-          setRecipe(updatedRecipes);
-          saveInscription(updatedRecipes);
+          saveRecipe(updatedRecipes,BinIdRecipe, setRecipe, setShow);
           setShowModal(false);
           setNewIngredient({ quantity: '', measure: '', type: '' });
         }
       };
       // Fonction pour gérer la modification des cellules
       const handleChange = (index, field, value) => {
-        const updatedInscription = [...recipes];
-        updatedInscription[index][field] = value;
-        setRecipe(updatedInscription);
-        saveInscription(updatedInscription)     
+        const updatedRecipes = [...recipes];
+        updatedRecipes[index][field] = value;
+        saveRecipe(updatedRecipes,BinIdRecipe, setRecipe, setShow);
       };
     
       // Fonction pour supprimer une ligne
       const handleDelete = (index) => {
         const updatedRecipe = recipes.filter((_, i) => i !== index);
-        setRecipe(updatedRecipe)
-        saveInscription(updatedRecipe)
+        saveRecipe(updatedRecipe,BinIdRecipe, setRecipe, setShow);
       };
 
       // Fonction pour gérer la modification des ingrédients
       const handleIngredientChange = (recipeIndex, ingredientIndex, field, value) => {
         const updatedRecipes = [...recipes];
         updatedRecipes[recipeIndex].ingredients[ingredientIndex][field] = value;
-        setRecipe(updatedRecipes);
-        saveInscription(updatedRecipes);
+        saveRecipe(updatedRecipes,BinIdRecipe, setRecipe, setShow);
       };
 
     // Fonction pour supprimer un ingrédient
     const handleIngredientDelete = (recipeIndex, ingredientIndex) => {
       const updatedRecipes = [...recipes];
       updatedRecipes[recipeIndex].ingredients = updatedRecipes[recipeIndex].ingredients.filter((_, i) => i !== ingredientIndex);
-      setRecipe(updatedRecipes);
-      saveInscription(updatedRecipes);
+      saveRecipe(updatedRecipes,BinIdRecipe, setRecipe, setShow);
     };
       // Function to handle opening the edit modal
   const handleEditRecipe = (index) => {
@@ -100,8 +79,7 @@ function RecipeManagement({isAuthenticated}) {
       if (newImage) {
         updatedRecipes[selectedRecipeIndex].image = URL.createObjectURL(newImage); // Set image as URL object
       }
-      setRecipe(updatedRecipes);
-      saveInscription(updatedRecipes);
+      saveRecipe(updatedRecipes,BinIdRecipe, setRecipe, setShow);
       setShowEditModal(false);
       setNewDescription('');
       setNewImage(null);
@@ -125,11 +103,11 @@ function RecipeManagement({isAuthenticated}) {
               />
             </div>
             <div>
-              <strong>Quantity:</strong>
+              <strong>Portion:</strong>
               <input
                 type="number"
-                value={recipe.quantity}
-                onChange={(e) => handleChange(index, 'quantity', e.target.value)}
+                value={recipe.portions}
+                onChange={(e) => handleChange(index, 'portion', e.target.value)}
               />
             </div>
             {/* Button to edit description and image */}

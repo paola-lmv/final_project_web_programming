@@ -3,7 +3,7 @@ import NavbarUnLoged from './navbar_unloged';
 import NavbarLoged from './navbar_loged';
 import React, { useState,useEffect } from 'react';
 import { BinIdInscription } from './acessCode'
-import { getData } from './dataFunction';
+import { getData,saveInscription } from './dataFunction';
 
 function InscriptionForm({isAuthenticated}) {
     const [formData , setFormData] = useState({
@@ -24,25 +24,6 @@ function InscriptionForm({isAuthenticated}) {
       fetchInscription(inscriptions);
     }, []);
 
-
-    const saveInscriptions = async (inscription) => {
-        try{
-          const res = await fetch(`https://api.jsonbin.io/v3/b/672923f7ad19ca34f8c42069`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Access-Key':  '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  // Use Access Key
-            },
-            body: JSON.stringify({ inscriptions: inscription })
-          });
-          if (res.ok) {
-            setInscription(inscriptions)// Add new post to the array of posts
-          }
-        } catch(e) {
-          console.error(e);
-          setShow(true);
-        }
-      }
     // Fonction de gestion du changement de valeur des champs
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,8 +37,7 @@ function InscriptionForm({isAuthenticated}) {
   const handleSubmit = (e) => {
     e.preventDefault(); // Empêche le rechargement de la page
     const updatedInscriptions = [formData, ...inscriptions];
-    setInscription(updatedInscriptions); 
-    saveInscriptions(updatedInscriptions); // Enregistre les nouvelles données sur l'API
+    saveInscription(updatedInscriptions,BinIdInscription,setInscription, setShow)(updatedInscriptions); // Enregistre les nouvelles données sur l'API
 
     
     // Réinitialise les champs du formulaire

@@ -2,7 +2,7 @@ import NavbarUnLoged from './navbar_unloged';
 import NavbarLoged from './navbar_loged';
 import React, { useState, useEffect } from 'react';
 import { BinIdInscription } from './acessCode'
-import { getData } from './dataFunction';
+import { getData,saveInscription } from './dataFunction';
 
 function InscriptionManagement({isAuthenticated}) { 
   const [inscriptions , setInscription] = useState([]);  
@@ -17,24 +17,7 @@ function InscriptionManagement({isAuthenticated}) {
     };
     fetchInscription(inscriptions);
   }, []);
-  
-  const saveInscription = async (inscription) => {
-      try{
-        const res = await fetch(`https://api.jsonbin.io/v3/b/672923f7ad19ca34f8c42069`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Access-Key':  '$2a$10$jZgwyAZTBDnrFGvDVyUjduR1Vsg5A6G7JS59xOsxwCPEPTh3VClui'  // Use Access Key
-          },
-          body: JSON.stringify({ inscriptions: inscription })
-        });
-      } catch(e) {
-        console.error(e);
-        setShow(true);
-      }
-    }
-  
-  
+    
     // Fonction pour gérer la modification des cellules
     const handleChange = (index, field, value) => {
       const updatedInscription = [...inscriptions];
@@ -46,8 +29,7 @@ function InscriptionManagement({isAuthenticated}) {
     // Fonction pour supprimer une ligne
     const handleDelete = (index) => {
       const updatedInscription = inscriptions.filter((_, i) => i !== index);
-      saveInscription(updatedInscription)
-      setInscription(updatedInscription)
+      saveInscription(updatedInscription,BinIdInscription,setInscription, setShow)(updatedInscriptions); // Enregistre les nouvelles données sur l'API
     };
   
     return (<>

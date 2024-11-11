@@ -1,33 +1,71 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import NavbarUnLoged from './navbar_unloged';
 import NavbarLoged from './navbar_loged';
-import { BinIdRecipe } from './acessCode'
-import { getData } from './dataFunction';
+import { BinIdIngredient, BinIdRecipe } from './acessCode';
+import { getData,SyncIngredients, calculateIngredientPrice, calculateMinPurchaseQty, saveIngredient2 } from './dataFunction';
 
 function Forecast({ isAuthenticated }) {
   const [ingredients, setIngredients] = useState([]);
+  const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
+    const fetchRecipe = async () => {
+      const allRecipe = await getData(BinIdRecipe); // Appel à la fonction importée
+      setRecipes(allRecipe.recipes);
+      setLoadingData(false);
+    };
+    fetchRecipe(recipes);
+
     const fetchIngredient = async () => {
-      const allIngredients = await getData(BinIdRecipe); // Appel à la fonction importée
-      setIngredients(allIngredients.recipes.flatMap(recipe =>
-        recipe.ingredients.map(ing => ({
-          ...ing,
-          minPurchaseQty: '', // Quantité minimale d'achat initialisée vide
-          purchaseQty: '', // Quantité d'achat initialisée vide
-          price: '' // Prix initialisé vide
-        }))
-      ));
+      const allIngredients = await getData(BinIdIngredient); // Appel à la fonction importée
+      setIngredients(allIngredients.ingredients);
       setLoading(false);
     };
     fetchIngredient(ingredients);
   }, []);
 
+  SyncIngredients(recipes, ingredients, loading, loadingData, BinIdIngredient, setIngredients, setShow); 
+  
+  const recalculateIngredientData = () => {
+    ingredients.forEach((ingredient) =>{
+      let a =  0;
+      ingredient.listRecipe.forEach((item)=>{
+        const matchingRecipe = recipes.find(
+          recIng => recIng.title ==item
+        );
+        const command = parseFloat(matchingRecipe.command);
+        const matchingingredient = matchingRecipe.ingredients.find(
+          l => l.type ==ingredient.type);
+        const quantity = parseFloat(matchingingredient.quantity);
+        const portion = parseFloat(matchingRecipe.portions);
+        a+=calculateMinPurchaseQty(command, quantity, portion) 
+      })
+      ingredient.minPurchaseQty =parseFloat(a.toFixed(2));
+      ingredient.ingredientPrice=parseFloat(calculateIngredientPrice(ingredient.unitPrice,ingredient.purchaseQty,ingredient.priceQty).toFixed(2)) ?? "undefine"
+    })
+    saveIngredient2(ingredients,BinIdIngredient,setIngredients, setShow )
+  };
+
+  // Calcul initial après chargement des données
+  useEffect(() => {
+    console.log("useEffect",!loading && !loadingData)
+    if (!loading && !loadingData) {
+      recalculateIngredientData();
+    }
+  }, [loading, loadingData]);
+  
+
+  // Fonction pour sauvegarder et relancer les calculs manuellement
+  const handleSaveAndRecalculate = () => {
+    recalculateIngredientData();
+    };
   const handleChange = (index, field, value) => {
-    const updatedIngredients = [...ingredients];
-    updatedIngredients[index][field] = value;
-    setIngredients(updatedIngredients);
+    const updatedIngredient = [...ingredients]; // Clone the output array
+    updatedIngredient[index][field] = value;
+    setIngredients(updatedIngredient);
   };
 
   return (
@@ -42,10 +80,9 @@ function Forecast({ isAuthenticated }) {
             <thead>
               <tr>
                 <th>Type</th>
-                <th>Quantité</th>
-                <th>Unité</th>
                 <th>Quantité minimale d'achat</th>
                 <th>Quantité d'achat</th>
+                <th>Unité</th>
                 <th>Prix ($)</th>
               </tr>
             </thead>
@@ -54,44 +91,28 @@ function Forecast({ isAuthenticated }) {
                 <tr key={index}>
                   <td>{ingredient.type}</td>
                   <td>
-                    <input
-                      type="text"
-                      value={ingredient.quantity}
-                      onChange={(e) => handleChange(index, 'quantity', e.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ingredient.measure}
-                      onChange={(e) => handleChange(index, 'measure', e.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      value={ingredient.minPurchaseQty}
-                      onChange={(e) => handleChange(index, 'minPurchaseQty', e.target.value)}
-                    />
+                    {ingredient.minPurchaseQty}
                   </td>
                   <td>
                     <input
                       type="number"
                       value={ingredient.purchaseQty}
-                      onChange={(e) => handleChange(index, 'purchaseQty', e.target.value)}
+                      onChange={(e) => handleChange(index,'purchaseQty', e.target.value)}
                     />
                   </td>
                   <td>
-                    <input
-                      type="number"
-                      value={ingredient.price}
-                      onChange={(e) => handleChange(index, 'price', e.target.value)}
-                    />
+                    {ingredient.measure}
+                  </td>
+                  <td>
+                      {ingredient.ingredientPrice}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <button onClick={handleSaveAndRecalculate} style={{ marginTop: '20px', padding: '10px', fontSize: '16px' }}>
+            Sauvegarder et Recalculer
+          </button>
         </div>
       )}
     </>

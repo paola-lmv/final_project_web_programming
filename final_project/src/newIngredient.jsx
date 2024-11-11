@@ -34,7 +34,7 @@ function NewIngredient({ handleIngredients, ingredients, deleteIngredient }) {
       <CardBody>
       <ListGroup>
           {(ingredients.map((ingredient,index)=>(
-            <ListGroup.Item><Ingredient quantity={ingredient.quantity} measure={ingredient.measure} type={ingredient.type} deleteIngredient={deleteIngredient}/></ListGroup.Item>
+            <ListGroup.Item><Ingredient key={"i" + index + "_" + ingredient.type}  quantity={ingredient.quantity} measure={ingredient.measure} type={ingredient.type} deleteIngredient={deleteIngredient}/></ListGroup.Item>
           )))}
         </ListGroup>
         <div>
