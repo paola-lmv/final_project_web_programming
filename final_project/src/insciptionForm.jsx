@@ -1,77 +1,102 @@
-import {Form, Button} from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import NavbarUnLoged from './navbar_unloged';
 import NavbarLoged from './navbar_loged';
-import React, { useState,useEffect } from 'react';
-import { BinIdInscription } from './acessCode'
-import { getData,saveInscription } from './dataFunction';
+import React, { useState, useEffect } from 'react';
+import { BinIdInscription } from './acessCode';
+import { getData, saveInscription } from './dataFunction';
+import {useTranslation} from  "react-i18next";
 
-function InscriptionForm({isAuthenticated}) {
-    const [formData , setFormData] = useState({
+
+function InscriptionForm({ isAuthenticated }) {
+    // State hooks for managing the variable
+    const { t, i18n } = useTranslation();
+    const [formData, setFormData] = useState({
         surname: '',
         lastName: '',
         adhesion: ''
-      });  
-    const [inscriptions , setInscription] = useState([]); 
+    });
+    const [inscriptions, setInscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [show, setShow] = useState(false);
-    
+
+    // Fetch existing inscription data when the component is mounted
     useEffect(() => {
-      const fetchInscription = async () => {
-        const allInscription = await getData(BinIdInscription); // Appel à la fonction importée
-        setInscription(allInscription.inscriptions);
-        setLoading(false);
-      };
-      fetchInscription(inscriptions);
+        const fetchInscription = async () => {
+            const allInscription = await getData(BinIdInscription); // Call to fetch data from the server
+            setInscriptions(allInscription.inscriptions); // Update state with the fetched inscriptions
+            setLoading(false); // Set loading to false once data is fetched
+        };
+        fetchInscription(); // Call the function to fetch inscriptions
     }, []);
 
-    // Fonction de gestion du changement de valeur des champs
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
+    // Function to handle changes in form input fields
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
 
-  // Fonction de gestion de la soumission du formulaire
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Empêche le rechargement de la page
-    const updatedInscriptions = [formData, ...inscriptions];
-    saveInscription(updatedInscriptions,BinIdInscription,setInscription, setShow)(updatedInscriptions); // Enregistre les nouvelles données sur l'API
+    // Function to handle form submission
+    const handleSubmit = (e) => {
+        e.preventDefault(); // Prevent page reload on form submit
 
-    
-    // Réinitialise les champs du formulaire
-    setFormData({
-        surname: '',
-        lastName: '',
-        adhesion: ''
-    });
-  };
-    return (<>
-    {isAuthenticated ? (<NavbarLoged/>):(<NavbarUnLoged/>)}
-    <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3" controlId="Surname">
-            <Form.Label>Surname</Form.Label>
-            <Form.Control type="text" name="surname" placeholder="your surname"  value={formData.surname} onChange={handleChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="LastName">
-            <Form.Label>Last name</Form.Label>
-            <Form.Control type="text" name="lastName" placeholder="your Last name" value={formData.lastName} onChange={handleChange}/>
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="adhesion">
-            <Form.Label>are you a member of the BDE?"</Form.Label>
-            <Form.Select  name= "adhesion" value={formData.adhesion} onChange={handleChange} >
-            <option value="">Select an option</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </Form.Select>
-        </Form.Group>
-        <Button variant="primary" type="submit">
-            Submit
-        </Button>
-    </Form>
-    </>
-    )
+        const updatedInscriptions = [formData, ...inscriptions];  // Add the new form data to the list of existing inscriptions
+        saveInscription(updatedInscriptions, BinIdInscription, setInscriptions);// Save the updated inscriptions list to the server
+
+        setFormData({
+            surname: '',
+            lastName: '',
+            adhesion: ''
+        });// Reset the form fields after submission
+    };
+
+    return (
+        <>
+            {isAuthenticated ? (<NavbarLoged />) : (<NavbarUnLoged />)}
+
+            <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3" controlId="Surname">
+                    <Form.Label>Surname</Form.Label>
+                    <Form.Control
+                        type="text"
+                        name={t("Surname")}
+                        placeholder={t("Your Surname")}
+                        value={formData.surname}
+                        onChange={handleChange} // Handle change in input value
+                    />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="LastName">
+                    <Form.Label>Last Name</Form.Label>
+                    <Form.Control
+                        type="text"
+                        name={t("LastName")}
+                        placeholder={t("Your Last Name")}
+                        value={formData.lastName}
+                        onChange={handleChange} // Handle change in input value
+                    />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="adhesion">
+                    <Form.Label>{t("Are you a member of the BDE?")}</Form.Label>
+                    <Form.Select
+                        name="adhesion"
+                        value={formData.adhesion}
+                        onChange={handleChange} // Handle change in select value
+                    >
+                        <option value="">{t("Select an option")}</option>
+                        <option value="Yes">{t("Yes")}</option>
+                        <option value="No">{t("No")}</option>
+                    </Form.Select>
+                </Form.Group>
+
+                <Button variant="primary" type="submit">
+                {t("Submit")}
+                </Button>
+            </Form>
+        </>
+    );
 };
 
 export default InscriptionForm;

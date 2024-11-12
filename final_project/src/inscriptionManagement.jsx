@@ -1,88 +1,86 @@
-import NavbarUnLoged from './navbar_unloged';
+import NavbarUnLoged from './navbar_unloged'; 
 import NavbarLoged from './navbar_loged';
 import React, { useState, useEffect } from 'react';
 import { BinIdInscription } from './acessCode'
-import { getData,saveInscription } from './dataFunction';
+import { getData, saveInscription,handleChange } from './dataFunction';
+import {useTranslation} from  "react-i18next";
 
-function InscriptionManagement({isAuthenticated}) { 
-  const [inscriptions , setInscription] = useState([]);  
-  const [loading, setLoading] = useState(true);
-  const [show, setShow] = useState(false);
+function InscriptionManagement({ isAuthenticated }) { 
+  // State to hold the list of inscriptions and is loading
+  const [inscriptionList, setInscriptionList] = useState([]);  
+  const [isLoading, setIsLoading] = useState(true);
+  const { t, i18n } = useTranslation();
 
+  // Fetch inscription data from the API when the component mounts
   useEffect(() => {
-    const fetchInscription = async () => {
-      const allInscription = await getData(BinIdInscription); // Appel à la fonction importée
-      setInscription(allInscription.inscriptions);
-      setLoading(false);
+    const fetchInscriptions = async () => {
+      const allInscriptions = await getData(BinIdInscription); // Fetch the inscription data
+      setInscriptionList(allInscriptions.inscriptions); // Store the inscriptions data in the state
+      setIsLoading(false); // Set loading state to false when data is fetched
     };
-    fetchInscription(inscriptions);
+    fetchInscriptions(); // Trigger the fetch operation
   }, []);
-    
-    // Fonction pour gérer la modification des cellules
-    const handleChange = (index, field, value) => {
-      const updatedInscription = [...inscriptions];
-      updatedInscription[index][field] = value;
-      setInscription(updatedInscription);
-      saveInscription(updatedInscription)     
-    };
   
-    // Fonction pour supprimer une ligne
-    const handleDelete = (index) => {
-      const updatedInscription = inscriptions.filter((_, i) => i !== index);
-      saveInscription(updatedInscription,BinIdInscription,setInscription, setShow)(updatedInscriptions); // Enregistre les nouvelles données sur l'API
-    };
-  
-    return (<>
-    {isAuthenticated ? (<NavbarLoged/>):(<NavbarUnLoged/>)}
-    <p>InscriptionManagement</p>
+  // Function to delete a row from the table
+  const handleDelete = (index) => {
+    const updatedInscriptions = inscriptionList.filter((_, i) => i !== index); // Filter out the item at the specified index
+    saveInscription(updatedInscriptions, BinIdInscription, setInscriptionList); // Save the new list without the deleted item
+  };
 
-    <div>
-      <h2>Tableau Interactif</h2>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Surname</th>
-            <th>Last Name</th>
-            <th>Adhesion</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {inscriptions.map((item, index) => (
-            <tr key={index}>
-              <td>
-                <input
-                  type="text"
-                  value={item.surname}
-                  onChange={(e) => handleChange(index, 'surname', e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  value={item.lastName}
-                  onChange={(e) => handleChange(index, 'lastName', e.target.value)}
-                />
-              </td>
-              <td>
-                <select
-                  value={item.adhesion}
-                  onChange={(e) => handleChange(index, 'adhesion', e.target.value)}
-                >
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
-                </select>
-              </td>
-              <td>
-                <button onClick={() => handleDelete(index)}>Delete</button>
-              </td>
+  return (
+    <>
+      {isAuthenticated ? (<NavbarLoged />) : (<NavbarUnLoged />)}
+
+      <div>
+        <h2>Interactive Table of Inscriptions</h2>
+        <table border="1">
+          <thead>
+            <tr>
+              <th>Surname</th>
+              <th>Last Name</th>
+              <th>Adhesion</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+          {isLoading ? (
+              <tr><td colSpan="6">{t("Loading")}...</td></tr>):(
+            inscriptionList.map((inscription, index) => (
+              <tr key={index}>
+                {/* Editable input fields for surname, last name, and adhesion */}
+                <td>
+                  <input
+                    type="text"
+                    value={inscription.surname}
+                    onChange={(e) => handleChange = (index, 'surname', e.target.value, inscriptionList, saveInscription, BinIdInscription, setInscriptionList)} // Update surname on change
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    value={inscription.lastName}
+                    onChange={(e) => handleChange = (index, 'lastName', e.target.value, inscriptionList, saveInscription, BinIdInscription, setInscriptionList)}  // Update last name on change
+                  />
+                </td>
+                <td>
+                  <select
+                    value={inscription.adhesion}
+                    onChange={(e) => handleChange = (index, 'adhesion', e.target.value, inscriptionList, saveInscription, BinIdInscription, setInscriptionList)} // Update adhesion status on change
+                  >
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </td>
+                <td>
+                  <button onClick={() => handleDelete(index)}>Delete</button> 
+                </td>
+              </tr>
+            )))}
+          </tbody>
+        </table>
+      </div>
     </>
-    )
-};
+  );
+}
 
 export default InscriptionManagement;

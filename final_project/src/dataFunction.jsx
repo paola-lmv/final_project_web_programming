@@ -1,123 +1,132 @@
-import { ACCESS_KEY } from './acessCode'
+import { ACCESS_KEY } from './acessCode';
 import { useEffect } from 'react';
 
-export function calculateMinPurchaseQty (command,quantity,portion){
-  return (command*quantity)/portion
-}
-export function calculateIngredientPrice (price,minPurchaseQty,quantity){
-  return (price*minPurchaseQty)/quantity
+// Function to calculate the minimum purchase quantity based on command, quantity, and portion
+export function calculateMinPurchaseQty(command, quantity, portion) {
+  return (command * quantity) / portion;
 }
 
-export const handleChange = (index, field, value, data, save, BinId, set,setShow ) => {
-  const updated = [...data]; // Clone the output array
-  updated[index][field] = value;
-  save(updated, BinId, set, setShow)
+// Function to calculate the ingredient price based on price, minimum purchase quantity, and purchase quantity
+export function calculateIngredientPrice(price, minPurchaseQty, quantity) {
+  return (price * minPurchaseQty) / quantity;
+}
+
+// Function to handle changes to ingredient fields and save the updated data
+export const handleChange = (index, field, value, dataList, saveFunction, BinId, setIngredientList) => {
+  const updatedIngredientList = [...dataList]; // Clone the ingredient list array
+  updatedIngredientList[index][field] = value; // Update the specific field for the selected ingredient
+  saveFunction(updatedIngredientList, BinId, setIngredientList); // Save the updated ingredient list
 };
 
+// Function to fetch data from a JSON bin by its BinId
 export const getData = async (BinId) => {
-    try {
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${BinId}/latest`, {
-        method: 'GET',
-        headers: { 'X-Access-Key': ACCESS_KEY }
-      });
-
-      const json = await res.json();
-      return json.record
-    } catch (e) {
-      console.error(e);
-      return [];
-    }
-  };
-
-  export const saveRecipe = async (data, BinId, set, setShow) => {
-    try{
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${BinId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Access-Key':  ACCESS_KEY  // Use Access Key
-        },
-        body: JSON.stringify({ recipes : data })
-      });
-      if (res.ok) {
-        set(data)// Add new post to the array of posts
-      }
-    } catch(e) {
-      console.error(e);
-      setShow(true);
-    }
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BinId}/latest`, {
+      method: 'GET',
+      headers: { 'X-Access-Key': ACCESS_KEY }
+    });
+    const json = await res.json();
+    return json.record; // Return the record from the JSON bin
+  } catch (e) {
+    console.error(e);
+    return []; // Return an empty array if there was an error fetching the data
   }
+};
 
-  export const saveIngredient2 = async (data, BinId, set, setShow) => {
-    try{
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${BinId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Access-Key':   ACCESS_KEY
-        },
-        body: JSON.stringify({ingredients : data})
-      });
-      if (res.ok) {
-        set(data)// Add new post to the array of posts
-      }
-    } catch(e) {
-      console.error(e);
-      setShow(true);
+// Function to save recipe data to the JSON bin
+export const saveRecipe = async (recipeList, BinId, setRecipeList) => {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BinId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Access-Key': ACCESS_KEY
+      },
+      body: JSON.stringify({ recipes: recipeList }) // Save the recipes as an array
+    });
+    if (res.ok) {
+      setRecipeList(recipeList); // Update the recipe list state with the new data
     }
+  } catch (e) {
+    console.error(e); // Log any error that occurs during the save process
   }
+};
 
-  export const saveIngredient = async (data, BinId, set, setShow) => {
-    try{
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${BinId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Access-Key':  ACCESS_KEY  // Use Access Key
-        },
-        body: JSON.stringify(data)
-      });
-      if (res.ok) {
-        set(data)// Add new post to the array of posts
-      }
-    } catch(e) {
-      console.error(e);
-      setShow(true);
+// Function to save ingredient data to the JSON bin
+export const saveIngredient2 = async (ingredientList, BinId, setIngredientList) => {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BinId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Access-Key': ACCESS_KEY
+      },
+      body: JSON.stringify({ ingredients: ingredientList }) // Save the ingredients as an array
+    });
+    if (res.ok) {
+      setIngredientList(ingredientList); // Update the ingredient list state with the new data
     }
-    }
+  } catch (e) {
+    console.error(e); // Log any error that occurs during the save process
+  }
+};
 
-    export const saveInscription = async (data,BinId,set, setShow) => {
-      try{
-        const res = await fetch(`https://api.jsonbin.io/v3/b/${BinId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Access-Key':  ACCESS_KEYi
-          },
-          body: JSON.stringify({ inscriptions: data })
-        });
-        if (res.ok) {
-          set(data)// Add new post to the array of posts
-        }
-      } catch(e) {
-        console.error(e);
-        setShow(true);
-      }
+// Function to save a generic data object to the JSON bin (used for different types of data)
+export const saveIngredient = async (ingredientList, BinId, set) => {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BinId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Access-Key': ACCESS_KEY
+      },
+      body: JSON.stringify(ingredientList) // Save the generic data
+    });
+    if (res.ok) {
+      set(ingredientList); // Update the state with the new data
     }
-  
-export const SyncIngredients = (data, ingredients, loading, loadingData, BinIdIngredient, setIngredient, setShow) => {
- 
+  } catch (e) {
+    console.error(e); // Log any error that occurs during the save process
+  }
+};
+
+// Function to save inscription data to the JSON bin
+export const saveInscription = async (inscriptionList, BinId, setInscriptionList) => {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BinId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Access-Key': ACCESS_KEY
+      },
+      body: JSON.stringify({ inscriptions: inscriptionList }) // Save the inscriptions as an array
+    });
+    if (res.ok) {
+      setInscriptionList(inscriptionList); // Update the inscription list state with the new data
+    }
+  } catch (e) {
+    console.error(e); // Log any error that occurs during the save process
+  }
+};
+
+// Synchronize ingredient data with recipe data, updating ingredient information
+export const SyncIngredients = (recipeList, existingIngredientList, isIngredientsLoading, isRecipesLoading, BinIdIngredient, setIngredientList) => {
+
   useEffect(() => {
-    if (!loading && !loadingData) {
-      console.log("SyncIngredients")
-      const newIngredient = [];
-      data.forEach(recipe => {
+    if (!isIngredientsLoading && !isRecipesLoading) { // Run only when ingredients and recipes are loaded
+      console.log("Synchronizing Ingredients with Recipes");
+      const newIngredientList = []; // List to store new ingredients found from recipes
+
+      recipeList.forEach(recipe => {
         if (recipe.ingredients) {
           recipe.ingredients.forEach(ingredient => {
-            const exists = ingredients.some(ing => ing.type === ingredient.type);
-            const exists2 = newIngredient.some(ing => ing.type === ingredient.type);
-            if (!exists && !exists2) {
-              newIngredient.push({
+            // Check if the ingredient already exists in the existing ingredients list or in the new ingredient list
+            const ingredientExistsInExisting = existingIngredientList.some(ing => ing.type === ingredient.type);
+            const ingredientExistsInNew = newIngredientList.some(ing => ing.type === ingredient.type);
+
+            if (!ingredientExistsInExisting && !ingredientExistsInNew) {
+              // Add new ingredient if it doesn't exist in either list
+              newIngredientList.push({
                 type: ingredient.type,
                 priceQty: "",
                 supplier: "",
@@ -129,31 +138,32 @@ export const SyncIngredients = (data, ingredients, loading, loadingData, BinIdIn
                 measure: ingredient.measure,
                 listRecipe: [recipe.title]
               });
-            } else if (!exists && exists2) {
-              const i = newIngredient.find(j => j.type === ingredient.type);
-              if (!i.listRecipe.includes(recipe.title)) {
-                i.listRecipe.push(recipe.title);
+            } else if (!ingredientExistsInExisting && ingredientExistsInNew) {
+              // Add recipe to the existing ingredient in the new list
+              const existingIngredient = newIngredientList.find(ing => ing.type === ingredient.type);
+              if (!existingIngredient.listRecipe.includes(recipe.title)) {
+                existingIngredient.listRecipe.push(recipe.title);
               }
-            } else if (exists && !exists2) {
-              const i = ingredients.find(j => j.type === ingredient.type);
-              if (!i.listRecipe.includes(recipe.title)) {
-                i.listRecipe.push(recipe.title);
+            } else if (ingredientExistsInExisting && !ingredientExistsInNew) {
+              // Add recipe to the existing ingredient in the original list
+              const existingIngredient = existingIngredientList.find(ing => ing.type === ingredient.type);
+              if (!existingIngredient.listRecipe.includes(recipe.title)) {
+                existingIngredient.listRecipe.push(recipe.title);
               }
             }
           });
         }
       });
 
-      const filteredIngredients = ingredients.filter(ing =>
-        data.some(recipe =>
+      // Filter out ingredients that are no longer relevant and update the ingredient list
+      const filteredIngredients = existingIngredientList.filter(ing =>
+        recipeList.some(recipe =>
           recipe.ingredients.some(recIng => recIng.type === ing.type)
         )
       );
 
-      const info = [...newIngredient, ...filteredIngredients];
-      saveIngredient2(info, BinIdIngredient, setIngredient, setShow);
+      const updatedIngredientList = [...newIngredientList, ...filteredIngredients];
+      saveIngredient2(updatedIngredientList, BinIdIngredient, setIngredientList); // Save the updated ingredient list
     }
-  }, [loading, loadingData]);
+  }, [isIngredientsLoading, isRecipesLoading]);
 };
-
-

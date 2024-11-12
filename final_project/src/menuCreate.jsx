@@ -1,49 +1,56 @@
 import NavbarUnLoged from './navbar_unloged';
 import NavbarLoged from './navbar_loged';
-import Recipe from './recipe';
 import NewRecipe from './newRecipe';
 import React, { useState, useEffect } from "react";
 import { Container, Spinner, Row, Col } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { BinIdRecipe } from './acessCode'
-import { getData,saveRecipe } from './dataFunction';
+import { BinIdRecipe } from './acessCode';
+import { getData, saveRecipe } from './dataFunction';
+import {useTranslation} from  "react-i18next";
 
-function MenuCreate({isAuthenticated}) {
-    // State with initial recipe
-    const [recipes , setRecipe] = useState([]);  
-    const [loading, setLoading] = useState(true);
-    const [show, setShow] = useState(false);
+
+function MenuCreate({ isAuthenticated }) {
+    // State to hold the list of recipes
+    const [recipeList, setRecipeList] = useState([]);  
+    const [isLoading, setIsLoading] = useState(true);
+    const { t, i18n } = useTranslation();
+
     
+    // Fetch the list of recipes when the component mounts
     useEffect(() => {
-      const fetchRecipe = async () => {
-        const allRecipe = await getData(BinIdRecipe); // Appel à la fonction importée
-        setRecipe(allRecipe.recipes);
-        setLoading(false);
+      const fetchRecipes = async () => {
+        const allRecipes = await getData(BinIdRecipe); // Fetch recipes from the API
+        setRecipeList(allRecipes.recipes); // Update the state with the fetched recipes
+        setIsLoading(false); // Set loading to false after data is fetched
       };
-      fetchRecipe(recipes);
+      fetchRecipes(); // Call the function to fetch the recipes
     }, []);
 
-  // Function to add a new post to the state
-  const addNewRecipe = (newRecipe) => {
-    saveRecipe([newRecipe,...recipes], BinIdRecipe, setRecipe, setShow)
-  };
-  const lengthRecipe=recipes.length;
-    return (<>
-    
-    {isAuthenticated ? (<NavbarLoged/>):(<NavbarUnLoged/>)}
-    <p>menu create</p>
-      <Container>
-        {loading ? 
-        <Spinner animation="grow" size="xl" />:<>
-          <Row className="mb-3">
-            <Col>
-              <NewRecipe addRecipe={addNewRecipe} lengthRecipe={lengthRecipe} />
-            </Col>
-          </Row>
-          </>}
-      </Container>
-    </>);
+    // Function to add a new recipe to the list
+    const addNewRecipe = (newRecipe) => {
+        saveRecipe([newRecipe, ...recipeList], BinIdRecipe, setRecipeList); // Save new recipe and update state
+    };
 
-};
+    return (
+        <>
+            {isAuthenticated ? (<NavbarLoged />) : (<NavbarUnLoged />)}
+
+            <Container>
+            {isLoading ? (
+              <tr><td colSpan="6">{t("Loading")}...</td></tr>
+                ) : (
+                    <>
+                        <Row className="mb-3">
+                            <Col>
+                                {/* Pass the function to add a new recipe and the recipe count to the NewRecipe component */}
+                                <NewRecipe addRecipe={addNewRecipe} />
+                            </Col>
+                        </Row>
+                    </>
+                )}
+            </Container>
+        </>
+    );
+}
 
 export default MenuCreate;

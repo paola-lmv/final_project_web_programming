@@ -1,10 +1,18 @@
-import {  Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 
-function Ingredient({isAuthenticated,quantity,measure,type,deleteIngredient}) {
+function Ingredient({ isAuthenticated, quantity, measure, type, deleteIngredient }) {
   return (
     <>
-        <p>{type} : {quantity}  {measure}</p>
-        {isAuthenticated ? (<Button onClick={deleteIngredient}>Delete</Button>):(<></>)}
+      {/* Displaying the ingredient type, quantity, and measure */}
+      <p>{type} : {quantity} {measure}</p>
+
+      {/* Conditional rendering based on the authentication state */}
+      {isAuthenticated && deleteIngredient ? (
+        // Only show the delete button if the user is authenticated and deleteIngredient function is provided
+        <Button onClick={deleteIngredient}>Delete</Button>
+      ) : (
+        <></>
+      )}
     </>
   );
 }

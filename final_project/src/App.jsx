@@ -9,8 +9,6 @@ import InscriptionManagement from './inscriptionManagement';
 import RecipeManagement from './recipeManagement';
 import RecipeOrderTable from './recipeOrderTable';
 import DataBase from './dataBase';
-import {useTranslation} from  "react-i18next";
-import { changeLanguage } from "i18next";
 import './i18n';
 
 
@@ -25,7 +23,7 @@ function App() {
         <Route path="/" element={<MenuDisplay isAuthenticated={false}/>} />
         <Route path="/menu" element={<MenuDisplay isAuthenticated={isAuthenticated}/>} />
         <Route path="/inscription" element={<InscriptionForm isAuthenticated={isAuthenticated}/>} />
-        <Route path="/login" element={isAuthenticated ? <Navigate  to="/forecast" replace={true} /> : <Login isAuthenticated={isAuthenticated} setAuthenticated={setAuthenticated}/>} />
+        <Route path="/login" element={isAuthenticated ? <Navigate  to="/menu" replace={true} /> : <Login isAuthenticated={isAuthenticated} setAuthenticated={setAuthenticated}/>} />
         <Route path="/menuCreate" element={isAuthenticated ?  <MenuCreate isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />
         <Route path="/forecast" element={isAuthenticated ?  <Forecast isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />
         <Route path="/recipeManagement" element={isAuthenticated ?  <RecipeManagement isAuthenticated={isAuthenticated} /> : <Navigate  to="/" replace={true} /> } />

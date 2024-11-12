@@ -1,82 +1,99 @@
 import React, { useState, useEffect } from 'react';
 import NavbarUnLoged from './navbar_unloged';
 import NavbarLoged from './navbar_loged';
-import { BinIdRecipe,BinIdIngredient } from './acessCode'
-import { getData, saveRecipe,calculateMinPurchaseQty, handleChange,saveIngredient2,calculateIngredientPrice } from './dataFunction';
-
+import { BinIdRecipe, BinIdIngredient } from './acessCode';
+import { getData, saveRecipe, calculateMinPurchaseQty, handleChange, saveIngredient2, calculateIngredientPrice } from './dataFunction';
+import { useTranslation } from "react-i18next";
 
 function RecipeOrderTable({ isAuthenticated }) {
   const [ingredients, setIngredients] = useState([]);
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [show, setShow] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
+  const { t, i18n } = useTranslation();
 
-  
+  // Fetch recipes and ingredients when the component mounts
   useEffect(() => {
     const fetchRecipe = async () => {
-      const allRecipe = await getData(BinIdRecipe); // Appel à la fonction importée
-      setRecipes(allRecipe.recipes)
-      console.log(recipes)
+      const allRecipe = await getData(BinIdRecipe); // Call to fetch recipe data
+      setRecipes(allRecipe.recipes);
+      console.log(recipes); // Log the recipes to the console
       setLoadingData(false);
     };
     fetchRecipe(recipes);
+    
     const fetchIngredient = async () => {
-      const allIngredients = await getData(BinIdIngredient); // Appel à la fonction importée
+      const allIngredients = await getData(BinIdIngredient); // Call to fetch ingredient data
       setIngredients(allIngredients.ingredients);
-      setLoading(false);
+      setLoading(false); // Set loading to false once ingredient data is fetched
     };
     fetchIngredient(ingredients);
   }, []);
 
+  // Function to calculate ingredient data based on the recipes and ingredients
   const calculateIngredientData = () => {
+    // Reset price for all recipes
     recipes.forEach(recipe => {
       recipe.price = 0;
-    })
-    ingredients.forEach((ingredient) =>{
-      ingredient.listRecipe.forEach((item)=>{
+    });
+
+    // Loop through ingredients and calculate total price per recipe
+    ingredients.forEach((ingredient) => {
+      ingredient.listRecipe.forEach((item) => {
         const matchingRecipe = recipes.find(
-          recIng => recIng.title ==item
+          recIng => recIng.title == item // Find the matching recipe by title
         );
-        console.log("matchingRecipe",matchingRecipe)
-        const i=ingredient.ingredientPrice;
-        console.log("ingredient",ingredient)
+        console.log("matchingRecipe", matchingRecipe);
+        
+        const i = ingredient.ingredientPrice; // Ingredient price
+        console.log("ingredient", ingredient);
+        
+        // Find the matching ingredient in the recipe
         const j = matchingRecipe.ingredients.find(
           ing => ing.type == ingredient.type
         );
-        console.log("i",calculateIngredientPrice(ingredient.unitPrice,calculateMinPurchaseQty(matchingRecipe.command,j.quantity,matchingRecipe.portions),ingredient.priceQty).toFixed(2));
+        console.log("i", calculateIngredientPrice(ingredient.unitPrice, calculateMinPurchaseQty(matchingRecipe.command, j.quantity, matchingRecipe.portions), ingredient.priceQty).toFixed(2));
+        
+        // If a valid recipe is found and ingredient price is not empty
         if (i !== "" && matchingRecipe) {
-          matchingRecipe.price += parseFloat(calculateIngredientPrice(ingredient.unitPrice,calculateMinPurchaseQty(matchingRecipe.command,j.quantity,matchingRecipe.portions),ingredient.priceQty).toFixed(2));
-        } 
-        console.log("matchingRecipe.price",matchingRecipe.price)      
-     });
-    })
-    saveRecipe(recipes,BinIdRecipe,setRecipes, setShow )
-  }
-  useEffect(() => {
-    if (!loading && !loadingData){
-      calculateIngredientData()
-  }
-}, [loading,loadingData])
+          matchingRecipe.price += parseFloat(calculateIngredientPrice(ingredient.unitPrice, calculateMinPurchaseQty(matchingRecipe.command, j.quantity, matchingRecipe.portions), ingredient.priceQty).toFixed(2)); // Update the recipe price
+        }
+        console.log("matchingRecipe.price", matchingRecipe.price); // Log the updated recipe price
+      });
+    });
+    // Save the updated recipes to the state and storage
+    saveRecipe(recipes, BinIdRecipe, setRecipes);
+  };
 
-const handleChangeAndRecalculate = (index, command, value,recipes,saveRecipe,BinIdRecipe, setRecipes, setShow) => {
-  handleChange(index, command,value,recipes,saveRecipe,BinIdRecipe, setRecipes, setShow)
-  calculateIngredientData();
+  // Recalculate ingredient data once loading is complete
+  useEffect(() => {
+    if (!loading && !loadingData) {
+      calculateIngredientData(); // Trigger recalculation when loading finishes
+    }
+  }, [loading, loadingData]);
+
+  // Handle changes to the command input and recalculate the ingredient data
+  const handleChangeAndRecalculate = (index, command, value, recipes, saveRecipe, BinIdRecipe, setRecipes) => {
+    handleChange(index, command, value, recipes, saveRecipe, BinIdRecipe, setRecipes); // Call the shared handleChange function
+    calculateIngredientData(); // Recalculate ingredient data after a change
   };
 
   return (
     <>
-      {isAuthenticated ? <NavbarLoged /> : <NavbarUnLoged />}
+     {isAuthenticated ? <NavbarLoged /> : <NavbarUnLoged />}
       <h2>Recipe Order Table</h2>
       <div style={{ overflowX: 'auto' }}>
         <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Command</th>
-              <th>Price ($)</th>
+              <th>{t("Title")}</th> 
+              <th>{t("Command")}</th> 
+              <th>{t("Price €")}</th> 
             </tr>
           </thead>
+          {loading && loadingData ? (
+        <div>{t("Loading")}...</div> // Replaced <tr> with <div> here for loading state
+        ) : (
           <tbody>
             {recipes.map((recipe, index) => (
               <tr key={index}>
@@ -85,15 +102,16 @@ const handleChangeAndRecalculate = (index, command, value,recipes,saveRecipe,Bin
                   <input
                     type="number"
                     value={recipe.command}
-                    onChange={(e) =>handleChangeAndRecalculate(index, 'command', e.target.value,recipes,saveRecipe,BinIdRecipe, setRecipes, setShow) }
+                    // When the command input changes, handle the change and recalculate prices
+                    onChange={(e) => handleChangeAndRecalculate(index, 'command', e.target.value, recipes, saveRecipe, BinIdRecipe, setRecipes)}
                   />
                 </td>
                 <td>
-                  {recipe.price}
+                  {recipe.price} {/* Display the calculated price of the recipe */}
                 </td>
               </tr>
             ))}
-          </tbody>
+          </tbody>)}
         </table>
       </div>
     </>

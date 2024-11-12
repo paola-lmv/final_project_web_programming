@@ -1,19 +1,16 @@
 import NewIngredient from './newIngredient';
 import React, { useState } from "react";
 import { FormControl, FormLabel, Card, Button, Form, CardBody, CardHeader} from "react-bootstrap";
-import { BinIdRecipe } from './acessCode'
-import { getData } from './dataFunction';
+import {useTranslation} from  "react-i18next";
 
-
-function NewRecipe({ addRecipe, lengthRecipe }) {
+function NewRecipe({ addRecipe }) {
 // State with initial recipe
 const [title, setTitle] = useState("");
 const [ingredients, setIngredient] = useState([]);
-const [portion, setPortion] = useState([]);
+const [portions, setPortion] = useState([]);
 const [description, setDescription] = useState("");
-const [imageUrl, setImageUrl] = useState("");
-const [loading, setLoading] = useState(true);
-const [show, setShow] = useState(false);
+const [imageUrl, setImageUrl] = useState("")
+const { t, i18n } = useTranslation();
 
 const deleteIngredient = (indexToDelete) => {
   const updatedIngredient = ingredients.filter((_, index) => index !== indexToDelete);
@@ -30,7 +27,7 @@ const handleIngredients = (ingredients) => {
     const newRecipe = {
       title,
       ingredients,
-      portion,
+      portions,
       description,
       imageUrl
     };
@@ -49,11 +46,11 @@ const handleIngredients = (ingredients) => {
 
   return (
     <Card className="new-recipe mt-3">
-      <CardHeader>Create a New Recipe</CardHeader>
+      <CardHeader>{t("Create a New Recipe")}</CardHeader>
       <CardBody>
       <Form onSubmit={handleSubmit} className="mb-2">
         <div>
-          <FormLabel htmlFor="title">Title:</FormLabel>
+          <FormLabel htmlFor="title">{t("Title")}:</FormLabel>
           <FormControl
             id="title"
             value={title}
@@ -65,16 +62,16 @@ const handleIngredients = (ingredients) => {
         <NewIngredient  handleIngredients={handleIngredients} ingredients={ingredients} deleteIngredient={deleteIngredient}/>
         </div>
         <div>
-          <FormLabel htmlFor="portion">portion:</FormLabel>
+          <FormLabel htmlFor="portion">{t("Portion")}:</FormLabel>
           <FormControl
             id="portion"
-            value={portion}
+            value={portions}
             onChange={(e) => setPortion(e.target.value)}
             required
           />
         </div>
         <div>
-          <FormLabel htmlFor="description">description:</FormLabel>
+          <FormLabel htmlFor="description">{t("Description")}:</FormLabel>
           <FormControl
             id="description"
             value={description}
@@ -83,7 +80,7 @@ const handleIngredients = (ingredients) => {
           />
         </div>
         <div>
-          <FormLabel htmlFor="imageUrl">Img:</FormLabel>
+          <FormLabel htmlFor="imageUrl">{t("Image")}:</FormLabel>
           <FormControl
             type="text"
             id="imageUrl"
@@ -92,7 +89,7 @@ const handleIngredients = (ingredients) => {
           />
         </div>
         <div className="mt-3">
-          <Button type="submit">Create</Button>
+          <Button type="submit">{t("Create")}</Button>
         </div>
        
       </Form> </CardBody>
