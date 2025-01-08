@@ -36,10 +36,10 @@ function InscriptionManagement({ isAuthenticated }) {
         <table border="1">
           <thead>
             <tr>
-              <th>Surname</th>
-              <th>Last Name</th>
-              <th>Adhesion</th>
-              <th>Actions</th>
+              <th>{t("Surname")}</th>
+              <th>{t("LastName")}</th>
+              <th>{t("Adhesion")}</th>
+              <th>{t("Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -51,14 +51,14 @@ function InscriptionManagement({ isAuthenticated }) {
                 <td>
                   <input
                     type="text"
-                    value={inscription.surname}
+                    value={inscription.Surname}
                     onChange={(e) => handleChange = (index, 'surname', e.target.value, inscriptionList, saveInscription, BinIdInscription, setInscriptionList)} // Update surname on change
                   />
                 </td>
                 <td>
                   <input
                     type="text"
-                    value={inscription.lastName}
+                    value={inscription.LastName}
                     onChange={(e) => handleChange = (index, 'lastName', e.target.value, inscriptionList, saveInscription, BinIdInscription, setInscriptionList)}  // Update last name on change
                   />
                 </td>

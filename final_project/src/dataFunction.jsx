@@ -23,7 +23,7 @@ export const getData = async (BinId) => {
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${BinId}/latest`, {
       method: 'GET',
-      headers: { 'X-Access-Key': ACCESS_KEY }
+      headers: { 'X-Master-Key': ACCESS_KEY }
     });
     const json = await res.json();
     return json.record; // Return the record from the JSON bin
@@ -40,7 +40,7 @@ export const saveRecipe = async (recipeList, BinId, setRecipeList) => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-Access-Key': ACCESS_KEY
+        'X-Master-Key': ACCESS_KEY
       },
       body: JSON.stringify({ recipes: recipeList }) // Save the recipes as an array
     });
@@ -59,7 +59,7 @@ export const saveIngredient2 = async (ingredientList, BinId, setIngredientList) 
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-Access-Key': ACCESS_KEY
+        'X-Master-Key': ACCESS_KEY
       },
       body: JSON.stringify({ ingredients: ingredientList }) // Save the ingredients as an array
     });
@@ -78,7 +78,7 @@ export const saveIngredient = async (ingredientList, BinId, set) => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-Access-Key': ACCESS_KEY
+        'X-Master-Key': ACCESS_KEY
       },
       body: JSON.stringify(ingredientList) // Save the generic data
     });
@@ -97,7 +97,7 @@ export const saveInscription = async (inscriptionList, BinId, setInscriptionList
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-Access-Key': ACCESS_KEY
+        'X-Master-Key': ACCESS_KEY
       },
       body: JSON.stringify({ inscriptions: inscriptionList }) // Save the inscriptions as an array
     });

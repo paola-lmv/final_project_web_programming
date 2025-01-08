@@ -11,8 +11,8 @@ function InscriptionForm({ isAuthenticated }) {
     // State hooks for managing the variable
     const { t, i18n } = useTranslation();
     const [formData, setFormData] = useState({
-        surname: '',
-        lastName: '',
+        Surname: '',
+        LastName: '',
         adhesion: ''
     });
     const [inscriptions, setInscriptions] = useState([]);
@@ -45,8 +45,8 @@ function InscriptionForm({ isAuthenticated }) {
         saveInscription(updatedInscriptions, BinIdInscription, setInscriptions);// Save the updated inscriptions list to the server
 
         setFormData({
-            surname: '',
-            lastName: '',
+            Surname: '',
+            LastName: '',
             adhesion: ''
         });// Reset the form fields after submission
     };
@@ -60,9 +60,9 @@ function InscriptionForm({ isAuthenticated }) {
                     <Form.Label>Surname</Form.Label>
                     <Form.Control
                         type="text"
-                        name={t("Surname")}
+                        name="Surname"
                         placeholder={t("Your Surname")}
-                        value={formData.surname}
+                        value={formData.Surname}
                         onChange={handleChange} // Handle change in input value
                     />
                 </Form.Group>
@@ -71,9 +71,9 @@ function InscriptionForm({ isAuthenticated }) {
                     <Form.Label>Last Name</Form.Label>
                     <Form.Control
                         type="text"
-                        name={t("LastName")}
+                        name="LastName"
                         placeholder={t("Your Last Name")}
-                        value={formData.lastName}
+                        value={formData.LastName}
                         onChange={handleChange} // Handle change in input value
                     />
                 </Form.Group>

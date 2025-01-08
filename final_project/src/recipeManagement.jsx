@@ -98,7 +98,7 @@ function RecipeManagement({ isAuthenticated }) {
       {isAuthenticated ? <NavbarLoged /> : <NavbarUnLoged />}
   
       <div>
-          <h2>Tableau Interactif des Recettes</h2>
+          <h2>{t("Ingredients Table")}</h2>
           {recipes.map((recipe, index) => (
             <div key={index} style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
               <div>
